@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kullanıcı Logları</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Kullanıcı Giriş/Kayıt Logları</h2>
+        <table border="1" cellpadding="8" style="border-collapse: collapse;">
+            <tr>
+                <th>Zaman</th>
+                <th>Kullanıcı Adı</th>
+                <th>Olay</th>
+            </tr>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ log.username }}</td>
+                <td>{{ log.event }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="/admin/users">Kullanıcı Listesi</a>
+    </div>
+</body>
+</html> 

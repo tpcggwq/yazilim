@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form action="{{ url_for('login') }}" method="POST">
+                {{ signup_form.hidden_tag() }}
+                <h1>Hesap Oluştur</h1>
+                <div class="social-container">
+                    <a href="{{ url_for('google_login') }}" class="social" data-csrf="{{ csrf_token() }}"><i class="fab fa-google"></i></a>
+                </div>
+                <span>veya kayıt olmak için e-posta adresinizi kullanın</span>
+                <div class="form-group">
+                    {{ signup_form.username(class="form-control", placeholder="Kullanıcı Adı") }}
+                    {% if signup_form.username.errors %}
+                        {% for error in signup_form.username.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ signup_form.email(class="form-control", placeholder="E-posta") }}
+                    {% if signup_form.email.errors %}
+                        {% for error in signup_form.email.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ signup_form.password(class="form-control", placeholder="Şifre") }}
+                    {% if signup_form.password.errors %}
+                        {% for error in signup_form.password.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ signup_form.confirm_password(class="form-control", placeholder="Şifreyi Onayla") }}
+                    {% if signup_form.confirm_password.errors %}
+                        {% for error in signup_form.confirm_password.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {{ signup_form.submit(class="btn", value="Kayıt Ol") }}
+            </form>
+        </div>
+
+        <div class="form-container sign-in-container">
+            <form action="{{ url_for('login') }}" method="POST">
+                {{ form.hidden_tag() }}
+                <h1>Giriş Yap</h1>
+                <div class="social-container">
+                    <a href="{{ url_for('google_login') }}" class="social" data-csrf="{{ csrf_token() }}"><i class="fab fa-google"></i></a>
+                </div>
+                <span>veya hesabınızla giriş yapın</span>
+                <div class="form-group">
+                    {{ form.username(class="form-control", placeholder="Kullanıcı Adı") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.password(class="form-control", placeholder="Şifre") }}
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('reset_password_request') }}">Şifrenizi mi unuttunuz?</a>
+                {{ form.submit(class="btn", value="Giriş Yap") }}
+            </form>
+        </div>
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Tekrar Hoş Geldiniz!</h1>
+                    <p>Bizimle bağlantıda kalmak için lütfen kişisel bilgilerinizle giriş yapın</p>
+                    <button class="ghost" id="signIn">Giriş Yap</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Merhaba, Arkadaş!</h1>
+                    <p>Kişisel bilgilerinizi girin ve bizimle yolculuğa başlayın</p>
+                    <button class="ghost" id="signUp">Kayıt Ol</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        // Add CSRF token to Google login links
+        document.querySelectorAll('.social').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const csrfToken = this.getAttribute('data-csrf');
+                const url = this.getAttribute('href');
+                window.location.href = url + '?csrf_token=' + csrfToken;
+            });
+        });
+    </script>
+</body>
+</html>

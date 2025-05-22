@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sohbet</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .message-box {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+            box-shadow: 0 2px 8px rgba(255,75,43,0.04);
+        }
+        .message-box img {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 5px;
+            border-radius: 8px;
+        }
+        .message-meta {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .message-notes {
+            font-size: 15px;
+            color: #333;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 30px;">
+            <div style="font-size: 1.5em; font-weight: bold; color: #FF416C;">{{ user.username }}</div>
+            <div style="margin-top: 8px; font-size: 1.1em; color: #333; border-bottom: 2px solid #FF416C; padding-bottom: 4px;">Arkadaşlar</div>
+        </div>
+        {% if incoming_requests %}
+        <div style="margin-bottom: 20px;">
+            <b>Gelen Arkadaşlık İstekleri:</b>
+            <ul>
+            {% for req in incoming_requests %}
+                <li>
+                    {{ req.from_user_id }} kullanıcısından istek
+                    <form action="{{ url_for('handle_friend_request') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="request_id" value="{{ req.id }}">
+                        <button type="submit" name="action" value="accept" class="btn">Kabul Et</button>
+                        <button type="submit" name="action" value="reject" class="btn">Reddet</button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% if outgoing_requests %}
+        <div style="margin-bottom: 20px;">
+            <b>Gönderilen Arkadaşlık İstekleri:</b>
+            <ul>
+            {% for req in outgoing_requests %}
+                <li>{{ req.to_user_id }} kullanıcısına istek (Beklemede)</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <form action="{{ url_for('add_friend') }}" method="POST" style="margin-bottom: 20px;">
+            <input type="text" name="friend_username" class="form-control" placeholder="Arkadaş kullanıcı adı" required style="max-width: 300px; display: inline-block;">
+            <button type="submit" class="btn">Arkadaş Ekle</button>
+        </form>
+        <h3>Arkadaşlarınız</h3>
+        <ul>
+            {% for friend in friends %}
+                <li>{{ friend.email }}</li>
+            {% else %}
+                <li>Henüz arkadaşınız yok.</li>
+            {% endfor %}
+        </ul>
+        <h3>Mesaj Gönder</h3>
+        <form action="{{ url_for('send_message') }}" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
+            <select name="recipient_id" class="form-control" required style="max-width: 300px; display: inline-block;">
+                <option value="">Arkadaş seçin</option>
+                {% for friend in friends %}
+                    <option value="{{ friend.id }}">{{ friend.email }}</option>
+                {% endfor %}
+            </select>
+            <input type="file" name="image" accept="image/*" class="form-control" required style="margin-top: 10px;">
+            <input type="text" name="notes" class="form-control" placeholder="Not ekle (isteğe bağlı)" style="margin-top: 10px;">
+            <button type="submit" class="btn" style="margin-top: 10px;">Fotoğraf ve Not Gönder</button>
+        </form>
+        <h3>Mesajlar</h3>
+        {% for msg in messages %}
+            <div class="message-box">
+                <div class="message-meta">
+                    <b>Kimden:</b> {{ (msg.sender_id == user.id and 'Siz' or (friends|selectattr('id', 'equalto', msg.sender_id)|first).email if (friends|selectattr('id', 'equalto', msg.sender_id)|first) else msg.sender_id) }}<br>
+                    <b>Kime:</b> {{ (msg.recipient_id == user.id and 'Siz' or (friends|selectattr('id', 'equalto', msg.recipient_id)|first).email if (friends|selectattr('id', 'equalto', msg.recipient_id)|first) else msg.recipient_id) }}
+                </div>
+                <img src="/{{ msg.image_path }}" alt="Fotoğraf">
+                <div class="message-notes"><b>Not:</b> {{ msg.notes or '' }}</div>
+            </div>
+        {% else %}
+            <div>Henüz mesaj yok.</div>
+        {% endfor %}
+    </div>
+</body>
+</html> 
