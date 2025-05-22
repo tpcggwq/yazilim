@@ -1,13 +1,14 @@
-Flask
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-WTF
-Flask-Mail
-authlib
-gunicorn
-itsdangerous
-Werkzeug
-WTForms
-Jinja2
-SQLAlchemy
-click
+     Flask
+     Flask-SQLAlchemy
+     Flask-Migrate
+     Flask-WTF
+     Flask-Mail
+     authlib
+     gunicorn
+     itsdangerous
+     Werkzeug
+     WTForms
+     Jinja2
+     SQLAlchemy
+     click
+     requests
