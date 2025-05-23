@@ -1,4 +1,18 @@
+# ... (önceki imports aynı)
+from flask import request  # Mobil kontrol için eklendi
 
+app = Flask(__name__, static_folder='static')
+app.config['TEMPLATES_AUTO_RELOAD'] = True  # Mobil için template reload
+# ... (diğer configler aynı)
+
+# Mobil kontrol endpointi
+@app.context_processor
+def inject_mobile():
+    return {
+        'is_mobile': 'Mobile' in request.user_agent.string
+    }
+
+# ... (diğer route'lar aynı)
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
