@@ -12,3 +12,5 @@
      SQLAlchemy
      click
      requests
+     gunicorn==20.1.0
+     flask-sqlalchemy==3.0.3
