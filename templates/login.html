@@ -2,22 +2,32 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Giriş Yap</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mobile.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
 </head>
 <body>
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="mobile-logo">Sohbet Uygulaması</h1>
+    </div>
+
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="{{ url_for('login') }}" method="POST">
                 {{ signup_form.hidden_tag() }}
                 <h1>Hesap Oluştur</h1>
                 <div class="social-container">
-                    <a href="{{ url_for('google_login') }}" class="social" data-csrf="{{ csrf_token() }}"><i class="fab fa-google"></i></a>
+                    <a href="{{ url_for('google_login') }}" class="social google-btn" data-csrf="{{ csrf_token() }}">
+                        <i class="fab fa-google"></i> Google ile Kayıt Ol
+                    </a>
                 </div>
-                <span>veya kayıt olmak için e-posta adresinizi kullanın</span>
+                <span class="divider">veya e-posta ile kayıt ol</span>
                 <div class="form-group">
                     {{ signup_form.username(class="form-control", placeholder="Kullanıcı Adı") }}
                     {% if signup_form.username.errors %}
@@ -59,9 +69,11 @@
                 {{ form.hidden_tag() }}
                 <h1>Giriş Yap</h1>
                 <div class="social-container">
-                    <a href="{{ url_for('google_login') }}" class="social" data-csrf="{{ csrf_token() }}"><i class="fab fa-google"></i></a>
+                    <a href="{{ url_for('google_login') }}" class="social google-btn" data-csrf="{{ csrf_token() }}">
+                        <i class="fab fa-google"></i> Google ile Giriş Yap
+                    </a>
                 </div>
-                <span>veya hesabınızla giriş yapın</span>
+                <span class="divider">veya hesabınızla giriş yapın</span>
                 <div class="form-group">
                     {{ form.username(class="form-control", placeholder="Kullanıcı Adı") }}
                     {% if form.username.errors %}
@@ -78,7 +90,7 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-                <a href="{{ url_for('reset_password_request') }}">Şifrenizi mi unuttunuz?</a>
+                <a class="forgot-password" href="{{ url_for('reset_password_request') }}">Şifrenizi mi unuttunuz?</a>
                 {{ form.submit(class="btn", value="Giriş Yap") }}
             </form>
         </div>
@@ -99,7 +111,19 @@
         </div>
     </div>
 
+    <div class="mobile-nav" id="mobileNav">
+        <a href="{{ url_for('login') }}">Giriş Yap</a>
+        <a href="{{ url_for('reset_password_request') }}">Şifremi Unuttum</a>
+        <a href="{{ url_for('google_login') }}">Google ile Giriş</a>
+    </div>
+
     <script>
+        // Mobil menü toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileNav').classList.toggle('active');
+        });
+
+        // Panel değiştirme
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
         const container = document.getElementById('container');
@@ -112,7 +136,7 @@
             container.classList.remove("right-panel-active");
         });
 
-        // Add CSRF token to Google login links
+        // CSRF token for Google login
         document.querySelectorAll('.social').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -121,6 +145,17 @@
                 window.location.href = url + '?csrf_token=' + csrfToken;
             });
         });
+
+        // Mobil cihaz kontrolü
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Mobil cihazlarda overlay'ı kapat
+        if (isMobile()) {
+            document.querySelector('.overlay-container').style.display = 'none';
+            container.classList.remove("right-panel-active");
+        }
     </script>
 </body>
 </html>
