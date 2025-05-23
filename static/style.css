@@ -287,3 +287,46 @@ footer a {
         transform: translateX(0);
     }
 } 
+/* Genel Mobil Stilleri */
+body {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.container {
+    width: 95%;
+    padding: 10px;
+}
+
+/* Form Elemanları */
+input, button, textarea {
+    min-height: 44px !important;  /* Dokunmatik uyum */
+}
+
+/* Navbar */
+.navbar {
+    flex-direction: column;
+}
+
+.hamburger {
+    display: block !important;
+}
+
+/* Chat Arayüzü */
+.chat-container {
+    flex-direction: column;
+}
+
+.friends-list, .messages-area {
+    width: 100% !important;
+}
+
+/* Medya Sorguları */
+@media (max-width: 480px) {
+    .login-form {
+        padding: 0 5px;
+    }
+    .alert {
+        font-size: 12px;
+    }
+}
