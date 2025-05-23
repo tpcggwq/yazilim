@@ -138,12 +138,22 @@ def chat():
     outgoing = FriendRequest.query.filter_by(from_user_id=user.id, status='pending').all()
 
     # Arkadaş listesi
-    friends = User.query.join(
-        FriendRequest, 
-        ((FriendRequest.from_user_id == user.id) & (FriendRequest.to_user_id == User.id) |
-        (FriendRequest.to_user_id == user.id) & (FriendRequest.from_user_id == User.id)
-    ).filter(FriendRequest.status == 'accepted').all()
-
+    # Arkadaş listesi sorgusu (tam düzeltilmiş hali)
+friends = db.session.query(User).join(
+    FriendRequest,
+    db.or_(
+        db.and_(
+            FriendRequest.from_user_id == user.id,
+            FriendRequest.to_user_id == User.id,
+            FriendRequest.status == 'accepted'
+        ),
+        db.and_(
+            FriendRequest.to_user_id == user.id,
+            FriendRequest.from_user_id == User.id,
+            FriendRequest.status == 'accepted'
+        )
+    )
+).all()
     # Mesajlar
     messages = Message.query.filter(
         (Message.sender_id == user.id) | (Message.recipient_id == user.id)
