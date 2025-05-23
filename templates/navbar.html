@@ -1,0 +1,13 @@
+<nav class="navbar">
+    <button class="hamburger">☰</button>
+    <div class="nav-links {% if is_mobile %}mobile-hidden{% endif %}">
+        <a href="/chat">Sohbet</a>
+        <a href="/logout">Çıkış</a>
+    </div>
+</nav>
+
+<script>
+document.querySelector('.hamburger').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('mobile-hidden');
+});
+</script>
